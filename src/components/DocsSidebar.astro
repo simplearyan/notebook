@@ -1,27 +1,193 @@
 ---
 import { getCollection } from "astro:content";
 
-const docs = await getCollection("docs");
-const sortedDocs = docs.sort((a, b) => a.data.order - b.data.order);
-
 const { currentSlug } = Astro.props;
+const docs = await getCollection("docs");
+
+type NavNode = {
+    name: string;
+    path: string;
+    children: NavNode[];
+    doc: any | null;
+    order: number;
+    title: string;
+};
+
+// Improved Tree Building Logic
+const groupDocs = (docs: any[]): NavNode[] => {
+    // Map slugs to items
+    const items = docs
+        .map((doc) => ({
+            slug: doc.slug,
+            title: doc.data.title,
+            order: doc.data.order,
+            ...doc,
+        }))
+        .sort((a, b) => a.order - b.order);
+
+    const tree: NavNode[] = [];
+    const lookup: Record<string, NavNode> = {};
+
+    items.forEach((doc) => {
+        const parts = doc.slug.split("/");
+
+        let path = "";
+        let parent = tree;
+
+        for (let i = 0; i < parts.length; i++) {
+            const part = parts[i];
+
+            // If part is 'index', it assigns the doc to the current path's folder
+            if (part === "index") {
+                continue;
+            }
+
+            path = path ? `${path}/${part}` : part;
+
+            // Check if we have a node for this path
+            let node = lookup[path];
+
+            if (!node) {
+                node = {
+                    name: part,
+                    path: path,
+                    children: [],
+                    doc: null,
+                    order: 999,
+                    title:
+                        part.charAt(0).toUpperCase() +
+                        part.slice(1).replace(/-/g, " "), // Fallback title
+                };
+                parent.push(node);
+                lookup[path] = node;
+            }
+
+            // If this is the last part of this doc's slug (ignoring 'index'), assign the doc
+            if (
+                i === parts.length - 1 ||
+                (i === parts.length - 2 && parts[i + 1] === "index")
+            ) {
+                node.doc = doc;
+                node.title = doc.data.title;
+                node.order = doc.data.order;
+            }
+
+            parent = node.children;
+        }
+    });
+
+    // Recursive sort
+    const sortTree = (nodes: NavNode[]) => {
+        nodes.sort((a, b) => a.order - b.order);
+        nodes.forEach((n) => sortTree(n.children));
+    };
+    sortTree(tree);
+
+    return tree;
+};
+
+const navTree = groupDocs(docs);
 ---
 
 <nav class="space-y-1">
-    {
-        sortedDocs.map((doc) => (
-            <a
-                href={`${import.meta.env.BASE_URL}docs/${doc.slug === "index" ? "" : doc.slug}`}
-                class:list={[
-                    "block px-4 py-2 text-sm font-medium rounded-lg transition-colors",
-                    currentSlug === doc.slug ||
-                    (currentSlug === "" && doc.slug === "index")
-                        ? "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200",
-                ]}
-            >
-                {doc.data.title}
-            </a>
-        ))
-    }
+    <ul class="space-y-1">
+        {
+            navTree.map((item) => {
+                // Render Logic:
+                // If it's a folder (has children) and has a doc (index page), link to it.
+                // If it's just a folder without doc, maybe just a label? (Assumed all folders have index for now or we just link to first child?)
+                // If it's a leaf (no children), link to it.
+
+                const isOpen = currentSlug.startsWith(item.path);
+                const isActive =
+                    currentSlug === item.path ||
+                    (currentSlug === "" && item.path === "index") ||
+                    currentSlug === item.path + "/index";
+
+                return (
+                    <li>
+                        {item.doc ? (
+                            <a
+                                href={`${import.meta.env.BASE_URL}docs/${item.path === "index" ? "" : item.path.replace(/\/index$/, "")}`}
+                                class:list={[
+                                    "px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center justify-between",
+                                    isActive
+                                        ? "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200",
+                                ]}
+                            >
+                                <span>{item.title}</span>
+                            </a>
+                        ) : (
+                            <div class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 mb-2">
+                                {item.title}
+                            </div>
+                        )}
+
+                        {item.children.length > 0 && (
+                            <ul class="pl-4 space-y-1 border-l border-slate-200 dark:border-slate-800 ml-4 mt-1">
+                                {item.children.map((child) => {
+                                    const isChildActive =
+                                        currentSlug === child.path ||
+                                        currentSlug === child.path + "/index";
+                                    // 2nd Level
+                                    return (
+                                        <li>
+                                            {child.doc ? (
+                                                <a
+                                                    href={`${import.meta.env.BASE_URL}docs/${child.path.replace(/\/index$/, "")}`}
+                                                    class:list={[
+                                                        "block px-4 py-1.5 text-sm rounded-md transition-colors",
+                                                        isChildActive
+                                                            ? "max-w-full text-blue-600 font-medium dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/20"
+                                                            : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200",
+                                                    ]}
+                                                >
+                                                    {child.title}
+                                                </a>
+                                            ) : (
+                                                <div class="px-4 py-1.5 text-xs font-semibold text-slate-400 uppercase mt-2">
+                                                    {child.title}
+                                                </div>
+                                            )}
+
+                                            {/* 3rd Level (e.g. Week 1 > Lesson 1) */}
+                                            {child.children.length > 0 && (
+                                                <ul class="pl-4 space-y-1 mt-1 border-l border-slate-200 dark:border-slate-800 ml-2">
+                                                    {child.children.map(
+                                                        (grandChild) => {
+                                                            const isGrandChildActive =
+                                                                currentSlug ===
+                                                                grandChild.path;
+                                                            return (
+                                                                <li>
+                                                                    <a
+                                                                        href={`${import.meta.env.BASE_URL}docs/${grandChild.path.replace(/\/index$/, "")}`}
+                                                                        class:list={[
+                                                                            "block px-4 py-1.5 text-sm transition-colors",
+                                                                            isGrandChildActive
+                                                                                ? "text-blue-600 font-medium dark:text-blue-400"
+                                                                                : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200",
+                                                                        ]}
+                                                                    >
+                                                                        {
+                                                                            grandChild.title
+                                                                        }
+                                                                    </a>
+                                                                </li>
+                                                            );
+                                                        },
+                                                    )}
+                                                </ul>
+                                            )}
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        )}
+                    </li>
+                );
+            })
+        }
+    </ul>
 </nav>
