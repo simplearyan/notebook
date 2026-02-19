@@ -1,0 +1,167 @@
+---
+interface Props {
+    title: string;
+    showFooter?: boolean;
+    showAds?: boolean;
+    isApp?: boolean;
+}
+
+const { title, showFooter = true, showAds = true, isApp = false } = Astro.props;
+import Footer from "../components/Footer.astro";
+import VerticalAd from "../components/ads/VerticalAd.astro";
+---
+
+<!doctype html>
+<html lang="en" class={isApp ? "h-full overflow-hidden" : ""}>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="description" content="Astro description" />
+        <meta name="viewport" content="width=device-width" />
+        <link
+            rel="icon"
+            type="image/svg+xml"
+            href={`${import.meta.env.BASE_URL}favicon.svg`}
+        />
+        <meta name="generator" content={Astro.generator} />
+        <title>{title}</title>
+
+        <script is:inline>
+            // Check for saved theme or system preference
+            const theme = (() => {
+                if (
+                    typeof localStorage !== "undefined" &&
+                    localStorage.getItem("theme")
+                ) {
+                    return localStorage.getItem("theme");
+                }
+                if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                    return "dark";
+                }
+                return "light";
+            })();
+
+            if (theme === "light") {
+                document.documentElement.classList.remove("dark");
+            } else {
+                document.documentElement.classList.add("dark");
+            }
+
+            window.localStorage.setItem("theme", theme);
+        </script>
+
+        <!-- Google AdSense -->
+        <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7993314093599705"
+            crossorigin="anonymous"></script>
+
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Kalam:wght@300;400;700&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href={`${import.meta.env.BASE_URL}src/styles/typography.css`}
+        />
+
+        <!-- PWA Meta -->
+        <link
+            rel="manifest"
+            href={`${import.meta.env.BASE_URL}manifest.json`}
+        />
+        <meta name="theme-color" content="#3b82f6" />
+        <link
+            rel="apple-touch-icon"
+            href={`${import.meta.env.BASE_URL}pwa-icon-192.png`}
+        />
+    </head>
+    <body
+        class={`font-sans antialiased text-slate-900 bg-white dark:bg-neutral-950 dark:text-neutral-50 ${isApp ? "h-full w-full overflow-hidden select-none" : ""}`}
+    >
+        <!-- Ad Rails -->
+        {
+            showAds && (
+                <>
+                    <div class="ad-rail left-rail">
+                        <VerticalAd />
+                    </div>
+                    <div class="ad-rail right-rail">
+                        <VerticalAd />
+                    </div>
+                </>
+            )
+        }
+
+        <script define:vars={{ base: import.meta.env.BASE_URL }}>
+            if ("serviceWorker" in navigator) {
+                window.addEventListener("load", () => {
+                    navigator.serviceWorker
+                        .register(base + "sw.js")
+                        .then((registration) => {
+                            console.log("SW Registered: ", registration);
+                        })
+                        .catch((registrationError) => {
+                            console.log(
+                                "SW Registration Failed: ",
+                                registrationError,
+                            );
+                        });
+                });
+            }
+        </script>
+        <slot />
+        {showFooter && <Footer />}
+    </body>
+</html>
+
+<style is:global>
+    /* Global scrollbar for that modern feel */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    /* Ad Rails */
+    .ad-rail {
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 40; /* Behind some overlays but above basics */
+        display: none;
+    }
+
+    .left-rail {
+        left: 1rem;
+    }
+
+    .right-rail {
+        right: 1rem;
+    }
+
+    /* Show on very large screens */
+    @media (min-width: 1600px) {
+        .ad-rail {
+            display: block;
+        }
+    }
+
+    /* Helper to re-enable selection for inputs even if body is select-none */
+    .select-none input,
+    .select-none textarea,
+    .select-none [contenteditable] {
+        -webkit-user-select: text;
+        user-select: text;
+    }
+</style>
