@@ -1,0 +1,153 @@
+---
+import { Menu, X } from "lucide-react";
+import DocsSidebar from "../components/DocsSidebar.astro";
+import Footer from "../components/Footer.astro"; // Optional, maybe we want a simpler footer or none
+import Navbar from "../components/Navbar.astro"; // We might want to reuse the main Navbar, or simpler one
+
+const { title, currentSlug } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <link
+            rel="icon"
+            type="image/svg+xml"
+            href={`${import.meta.env.BASE_URL}favicon.svg`}
+        />
+        <meta name="generator" content={Astro.generator} />
+        <title>
+            {title ? `${title} - Kinetix Docs` : "Kinetix Documentation"}
+        </title>
+
+        <script is:inline>
+            // Check for saved theme or system preference - copied from Layout.astro
+            const theme = (() => {
+                if (
+                    typeof localStorage !== "undefined" &&
+                    localStorage.getItem("theme")
+                ) {
+                    return localStorage.getItem("theme");
+                }
+                if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                    return "dark";
+                }
+                return "light";
+            })();
+
+            if (theme === "light") {
+                document.documentElement.classList.remove("dark");
+            } else {
+                document.documentElement.classList.add("dark");
+            }
+            window.localStorage.setItem("theme", theme);
+        </script>
+
+        <!-- Fonts (Same as Layout.astro) -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Kalam:wght@300;400;700&family=Outfit:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href={`${import.meta.env.BASE_URL}src/styles/typography.css`}
+        />
+    </head>
+    <body
+        class="font-sans antialiased text-slate-900 bg-white dark:bg-neutral-950 dark:text-neutral-50 h-full"
+    >
+        <!-- Site Header (Can reuse Navbar or simplified version) -->
+        <Navbar />
+
+        <div class="flex min-h-[calc(100vh-5rem)]">
+            <!-- Adjust based on Navbar height -->
+
+            <!-- Desktop Sidebar -->
+            <aside
+                class="hidden lg:block w-64 border-r border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-neutral-900/50 sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto p-6"
+            >
+                <div class="mb-6">
+                    <h5
+                        class="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wider mb-4"
+                    >
+                        Documentation
+                    </h5>
+                    <DocsSidebar currentSlug={currentSlug} />
+                </div>
+            </aside>
+
+            <!-- Mobile Sidebar Toggle (Floating or in a sub-header) -->
+            <div class="lg:hidden fixed bottom-6 right-6 z-50">
+                <button
+                    id="docs-menu-btn"
+                    class="w-12 h-12 bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-700 transition-colors"
+                >
+                    <Menu size={24} />
+                </button>
+            </div>
+
+            <!-- Mobile Off-canvas Sidebar -->
+            <div
+                id="docs-mobile-menu"
+                class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity lg:hidden"
+            >
+                <div
+                    class="absolute right-0 top-0 bottom-0 w-3/4 max-w-sm bg-white dark:bg-neutral-900 p-6 shadow-xl transform translate-x-full transition-transform duration-300"
+                    id="docs-mobile-drawer"
+                >
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-lg font-bold">Docs Navigation</h2>
+                        <button
+                            id="docs-menu-close"
+                            class="text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"
+                        >
+                            <X size={24} />
+                        </button>
+                    </div>
+                    <DocsSidebar currentSlug={currentSlug} />
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="flex-1 w-full max-w-4xl mx-auto px-6 py-10">
+                <article class="prose dark:prose-invert max-w-none">
+                    <slot />
+                </article>
+            </main>
+        </div>
+
+        <script>
+            // Mobile Menu Logic
+            const menuBtn = document.getElementById("docs-menu-btn");
+            const closeBtn = document.getElementById("docs-menu-close");
+            const mobileMenu = document.getElementById("docs-mobile-menu");
+            const drawer = document.getElementById("docs-mobile-drawer");
+
+            function openMenu() {
+                mobileMenu.classList.remove("opacity-0", "pointer-events-none");
+                drawer.classList.remove("translate-x-full");
+                document.body.style.overflow = "hidden";
+            }
+
+            function closeMenu() {
+                mobileMenu.classList.add("opacity-0", "pointer-events-none");
+                drawer.classList.add("translate-x-full");
+                document.body.style.overflow = "";
+            }
+
+            if (menuBtn) menuBtn.addEventListener("click", openMenu);
+            if (closeBtn) closeBtn.addEventListener("click", closeMenu);
+
+            // Close on outside click
+            if (mobileMenu) {
+                mobileMenu.addEventListener("click", (e) => {
+                    if (e.target === mobileMenu) closeMenu();
+                });
+            }
+        </script>
+    </body>
+</html>

@@ -22,6 +22,18 @@
     --spacing-lg: 2rem;
 }
 
+/* Dark Mode Overrides */
+html.dark {
+    --color-primary: #f8fafc;
+    /* Slate 50 */
+    --color-secondary: #60a5fa;
+    /* Blue 400 */
+    --color-text: #cbd5e1;
+    /* Slate 300 */
+    --color-bg-code: #1e293b;
+    /* Slate 800 */
+}
+
 /* Base Prose Styles */
 .prose {
     max-width: 65ch;
@@ -49,6 +61,12 @@
     font-family: var(--font-serif);
     font-style: italic;
     background: linear-gradient(to right, #0F172A, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+html.dark .prose h1 {
+    background: linear-gradient(to right, #f8fafc, #60a5fa);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -145,6 +163,11 @@
     background: #f8fafc;
     padding: 1.5rem;
     border-radius: 0 8px 8px 0;
+}
+
+html.dark .prose blockquote {
+    background: #1e293b;
+    color: #cbd5e1;
 }
 
 /* Code Blocks */
