@@ -10,9 +10,19 @@ import mdx from '@astrojs/mdx';
 // Detect environment
 const isGhPages = process.env.GITHUB_ACTIONS === 'true';
 
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+
 export default defineConfig({
   site: 'https://aryan-sharma.github.io', 
-  // Vercel uses root '/', GitHub Pages uses '/kinetix/'
   base: isGhPages ? '/kinetix/' : '/',
-  integrations: [react(), tailwind(), mdx()]
+  markdown: {
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
+  },
+  integrations: [
+    react(), 
+    tailwind(), 
+    mdx()
+  ]
 });

@@ -1,0 +1,217 @@
+/* Premium Docs Prose Styles */
+
+/* 1. KaTeX Styles (Minimal required) */
+/* You might need to import katex.min.css in Layout or here if you download it. 
+   For now, we assume the user might link it in head or we import it if we had a css loader.
+   Usually best to add <link> in DocsLayout. 
+*/
+
+/* 2. Premium Typography */
+.prose {
+    --tw-prose-body: #334155;
+    --tw-prose-headings: #0f172a;
+    --tw-prose-lead: #475569;
+    --tw-prose-links: #2563eb;
+    --tw-prose-bold: #0f172a;
+    --tw-prose-counters: #64748b;
+    --tw-prose-bullets: #94a3b8;
+    --tw-prose-hr: #e2e8f0;
+    --tw-prose-quotes: #0f172a;
+    --tw-prose-quote-borders: #e2e8f0;
+    --tw-prose-captions: #64748b;
+    --tw-prose-code: #0f172a;
+    --tw-prose-pre-code: #e2e8f0;
+    --tw-prose-pre-bg: #1e293b;
+    --tw-prose-th-borders: #e2e8f0;
+    --tw-prose-td-borders: #e2e8f0;
+
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 1.0625rem;
+    /* 17px - optimal reading size */
+    line-height: 1.75;
+    max-width: 65ch;
+    /* Optimal line length */
+    color: var(--tw-prose-body);
+}
+
+/* Dark Mode Prose Customization */
+.dark .prose {
+    --tw-prose-body: #cbd5e1;
+    --tw-prose-headings: #f8fafc;
+    --tw-prose-lead: #94a3b8;
+    --tw-prose-links: #60a5fa;
+    --tw-prose-bold: #f8fafc;
+    --tw-prose-counters: #94a3b8;
+    --tw-prose-bullets: #475569;
+    --tw-prose-hr: #334155;
+    --tw-prose-quotes: #e2e8f0;
+    --tw-prose-quote-borders: #334155;
+    --tw-prose-captions: #94a3b8;
+    --tw-prose-code: #f8fafc;
+    --tw-prose-pre-code: #e2e8f0;
+    --tw-prose-pre-bg: #0f172a;
+    --tw-prose-th-borders: #334155;
+    --tw-prose-td-borders: #334155;
+}
+
+/* Headings */
+.prose h1 {
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: -0.025em;
+    font-weight: 700;
+    font-size: 2.25rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(to right, #0F172A, #334155);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 1rem;
+}
+
+.dark .prose h1 {
+    background: linear-gradient(to right, #f8fafc, #94a3b8);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    border-color: #1e293b;
+}
+
+.prose h2 {
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    font-size: 1.75rem;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+}
+
+.prose h3 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 1.35rem;
+    margin-top: 2rem;
+    color: #1e293b;
+}
+
+.dark .prose h3 {
+    color: #e2e8f0;
+}
+
+/* Paragraphs */
+.prose p {
+    margin-bottom: 1.5em;
+    text-align: justify;
+    /* Optional: cleaner edges */
+}
+
+/* Blockquotes */
+.prose blockquote {
+    font-style: normal;
+    font-weight: 400;
+    border-left-width: 0.25rem;
+    border-left-color: #3b82f6;
+    /* Accent color */
+    background-color: #f8fafc;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    color: #475569;
+}
+
+.dark .prose blockquote {
+    background-color: #1e293b;
+    border-left-color: #60a5fa;
+    color: #cbd5e1;
+}
+
+/* Code Blocks */
+.prose pre {
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.dark .prose pre {
+    border-color: #1e293b;
+    box-shadow: none;
+    background-color: #111;
+    /* More deeper black */
+}
+
+/* Inline Code */
+.prose :not(pre)>code {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    font-weight: 500;
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+    font-family: 'Fira Code', monospace;
+}
+
+.dark .prose :not(pre)>code {
+    background-color: #1e293b;
+    color: #e2e8f0;
+}
+
+/* Links */
+.prose a {
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.prose a:hover {
+    border-color: currentColor;
+}
+
+/* Tables */
+.prose table {
+    width: 100%;
+    margin: 2em 0;
+    border-collapse: collapse;
+    font-size: 0.95em;
+}
+
+.prose thead th {
+    font-weight: 600;
+    text-align: left;
+    padding: 0.75rem;
+    border-bottom: 2px solid #e2e8f0;
+    color: #334155;
+}
+
+.dark .prose thead th {
+    border-color: #334155;
+    color: #cbd5e1;
+}
+
+.prose td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.dark .prose td {
+    border-color: #1e293b;
+}
+
+/* Lists */
+.prose ul>li::marker {
+    color: #94a3b8;
+}
+
+.dark .prose ul>li::marker {
+    color: #64748b;
+}
+
+/* KaTeX Adjustments */
+.katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 1rem 0;
+    margin: 1.5rem 0;
+}
+
+.katex {
+    font-size: 1.1em;
+}
