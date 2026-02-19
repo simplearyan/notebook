@@ -1,0 +1,77 @@
+---
+import { Menu, X, Rocket } from "lucide-react";
+import ThemeToggle from "./ThemeToggle.astro";
+
+const links = [{ label: "GitHub", href: "https://github.com", external: true }];
+---
+
+<header
+    class="sticky top-0 z-40 w-full flex-none transition-colors duration-500 lg:z-50 border-b border-slate-900/10 dark:border-slate-50/[0.06] bg-white dark:bg-neutral-950"
+>
+    <div class="max-w-8xl mx-auto">
+        <div
+            class="py-2.5 border-b border-slate-900/10 lg:px-8 lg:border-0 dark:border-slate-300/10 px-4"
+        >
+            <div class="relative flex items-center">
+                <!-- Mobile Menu Button (Trigger for Sidebar) -->
+                <button
+                    type="button"
+                    id="docs-menu-btn-header"
+                    class="lg:hidden text-slate-500 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300 mr-4"
+                >
+                    <span class="sr-only">Navigation</span>
+                    <Menu className="w-5 h-5" />
+                </button>
+
+                <!-- Logo -->
+                <a
+                    class="mr-3 flex-none overflow-hidden md:w-auto text-slate-900 dark:text-white font-bold text-lg tracking-tight flex items-center gap-2"
+                    href={`${import.meta.env.BASE_URL}`}
+                >
+                    <div
+                        class="w-6 h-6 bg-slate-900 dark:bg-white rounded-md flex items-center justify-center text-white dark:text-slate-900"
+                    >
+                        <Rocket size={14} />
+                    </div>
+                    <span>Kinetix</span>
+                    <span
+                        class="text-slate-400 dark:text-slate-500 font-normal px-1 text-sm bg-slate-100 dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700"
+                        >docs</span
+                    >
+                </a>
+
+                <!-- Desktop Links & Actions -->
+                <div class="relative hidden lg:flex items-center ml-auto">
+                    <nav
+                        class="text-sm leading-6 font-medium text-slate-700 dark:text-slate-200"
+                    >
+                        <ul class="flex space-x-6">
+                            {
+                                links.map((link) => (
+                                    <li>
+                                        <a
+                                            href={link.href}
+                                            target={
+                                                link.external
+                                                    ? "_blank"
+                                                    : undefined
+                                            }
+                                            class="hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+                                        >
+                                            {link.label}
+                                        </a>
+                                    </li>
+                                ))
+                            }
+                        </ul>
+                    </nav>
+                    <div
+                        class="flex items-center border-l border-slate-200 ml-6 pl-6 dark:border-slate-800"
+                    >
+                        <ThemeToggle />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
