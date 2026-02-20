@@ -3,8 +3,7 @@ import { Sun, Moon } from "lucide-react";
 ---
 
 <button
-    id="theme-toggle"
-    class="relative p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-200 dark:focus:ring-slate-700 group"
+    class="theme-toggle relative p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-200 dark:focus:ring-slate-700 group"
     aria-label="Toggle Theme"
 >
     <!-- Sun Icon: Visible in Dark, Hidden in Light (Rotates in) -->
@@ -19,36 +18,42 @@ import { Sun, Moon } from "lucide-react";
 </button>
 
 <script>
-    const themeToggleBtn = document.getElementById("theme-toggle");
+    const setupToggles = () => {
+        const themeToggleBtns = document.querySelectorAll(".theme-toggle");
 
-    const getTheme = () => {
-        if (
-            typeof localStorage !== "undefined" &&
-            localStorage.getItem("theme")
-        ) {
-            return localStorage.getItem("theme");
-        }
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            return "dark";
-        }
-        return "light";
+        const getTheme = () => {
+            if (
+                typeof localStorage !== "undefined" &&
+                localStorage.getItem("theme")
+            ) {
+                return localStorage.getItem("theme");
+            }
+            if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                return "dark";
+            }
+            return "light";
+        };
+
+        const setTheme = (theme: "light" | "dark") => {
+            if (theme === "light") {
+                document.documentElement.classList.remove("dark");
+            } else {
+                document.documentElement.classList.add("dark");
+            }
+            window.localStorage.setItem("theme", theme);
+        };
+
+        themeToggleBtns.forEach((btn) => {
+            // Remove old listener if any (though Astro scripts usually run once)
+            btn.addEventListener("click", () => {
+                const currentTheme = getTheme();
+                const newTheme = currentTheme === "light" ? "dark" : "light";
+                setTheme(newTheme);
+            });
+        });
     };
 
-    const setTheme = (theme) => {
-        if (theme === "light") {
-            document.documentElement.classList.remove("dark");
-        } else {
-            document.documentElement.classList.add("dark");
-        }
-        window.localStorage.setItem("theme", theme);
-    };
-
-    // Initial check (handled by inline script in Layout/DocsLayout, but good to have handled here too if component is isolated)
-    // We rely on the layout script to prevent FOUC, so this script just handles the toggle logic.
-
-    themeToggleBtn?.addEventListener("click", () => {
-        const currentTheme = getTheme();
-        const newTheme = currentTheme === "light" ? "dark" : "light";
-        setTheme(newTheme);
-    });
+    setupToggles();
+    // Re-run on view transitions if using them
+    document.addEventListener("astro:after-swap", setupToggles);
 </script>

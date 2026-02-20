@@ -7,6 +7,15 @@
 */
 
 /* 2. Premium Typography */
+/* Global Defaults */
+:root {
+    --docs-font-family: 'Inter', system-ui, sans-serif;
+    --docs-font-size-base: 1.0625rem;
+    /* Default 17px */
+    --docs-line-height: 1.75;
+}
+
+/* 2. Premium Typography */
 .prose {
     --tw-prose-body: #334155;
     --tw-prose-headings: #0f172a;
@@ -25,10 +34,9 @@
     --tw-prose-th-borders: #e2e8f0;
     --tw-prose-td-borders: #e2e8f0;
 
-    font-family: 'Inter', system-ui, sans-serif;
-    font-size: 1.0625rem;
-    /* 17px - optimal reading size */
-    line-height: 1.75;
+    font-family: var(--docs-font-family);
+    font-size: var(--docs-font-size-base);
+    line-height: var(--docs-line-height);
     max-width: 65ch;
     /* Optimal line length */
     color: var(--tw-prose-body);

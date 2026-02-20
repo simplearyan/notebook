@@ -1,6 +1,8 @@
 ---
-import { Menu, X, Rocket } from "lucide-react";
+import { Menu, X, Rocket, Github } from "lucide-react";
 import ThemeToggle from "./ThemeToggle.astro";
+
+import FontSettings from "./FontSettings";
 
 const links = [{ label: "GitHub", href: "https://github.com", external: true }];
 ---
@@ -8,12 +10,13 @@ const links = [{ label: "GitHub", href: "https://github.com", external: true }];
 <header
     class="sticky top-0 z-40 w-full flex-none transition-colors duration-500 lg:z-50 border-b border-slate-900/10 dark:border-slate-50/[0.06] bg-white dark:bg-neutral-950"
 >
+    {/* ... rest of the header ... */}
     <div class="max-w-8xl mx-auto">
         <div
             class="py-2.5 border-b border-slate-900/10 lg:px-8 lg:border-0 dark:border-slate-300/10 px-4"
         >
             <div class="relative flex items-center">
-                <!-- Mobile Menu Button (Trigger for Sidebar) -->
+                {/* Mobile Menu Button ... */}
                 <button
                     type="button"
                     id="docs-menu-btn-header"
@@ -23,7 +26,7 @@ const links = [{ label: "GitHub", href: "https://github.com", external: true }];
                     <Menu className="w-5 h-5" />
                 </button>
 
-                <!-- Logo -->
+                {/* Logo ... */}
                 <a
                     class="mr-3 flex-none overflow-hidden md:w-auto text-slate-900 dark:text-white font-bold text-lg tracking-tight flex items-center gap-2"
                     href={`${import.meta.env.BASE_URL}`}
@@ -40,7 +43,7 @@ const links = [{ label: "GitHub", href: "https://github.com", external: true }];
                     >
                 </a>
 
-                <!-- Desktop Links & Actions -->
+                {/* Desktop Links & Actions */}
                 <div class="relative hidden lg:flex items-center ml-auto">
                     <nav
                         class="text-sm leading-6 font-medium text-slate-700 dark:text-slate-200"
@@ -56,9 +59,13 @@ const links = [{ label: "GitHub", href: "https://github.com", external: true }];
                                                     ? "_blank"
                                                     : undefined
                                             }
-                                            class="hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+                                            class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors"
+                                            title={link.label}
                                         >
-                                            {link.label}
+                                            <Github className="w-5 h-5" />
+                                            <span class="sr-only">
+                                                {link.label}
+                                            </span>
                                         </a>
                                     </li>
                                 ))
@@ -66,8 +73,9 @@ const links = [{ label: "GitHub", href: "https://github.com", external: true }];
                         </ul>
                     </nav>
                     <div
-                        class="flex items-center border-l border-slate-200 ml-6 pl-6 dark:border-slate-800"
+                        class="flex items-center gap-4 border-l border-slate-200 ml-6 pl-6 dark:border-slate-800"
                     >
+                        <FontSettings client:load />
                         <ThemeToggle />
                     </div>
                 </div>
