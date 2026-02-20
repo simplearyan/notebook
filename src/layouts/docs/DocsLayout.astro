@@ -1,14 +1,14 @@
 ---
 import { Menu, X } from "lucide-react";
-import DocsSidebar from "../components/DocsSidebar.astro";
-import DocsHeader from "../components/DocsHeader.astro";
-import ThemeToggle from "../components/ThemeToggle.astro";
-import FontSettings from "../components/FontSettings";
-import DocsTableOfContents from "../components/DocsTableOfContents.astro";
-import DocsPrevNext from "../components/DocsPrevNext.astro";
-import { docsConfig } from "../config/docs";
-import PencilRocketLogo from "../components/PencilRocketLogo.astro";
-import "../styles/docs-prose.css";
+import DocsSidebar from "../../components/docs/DocsSidebar.astro";
+import DocsHeader from "../../components/docs/DocsHeader.astro";
+import ThemeToggle from "../../components/ThemeToggle.astro";
+import FontSettings from "../../components/docs/FontSettings";
+import DocsTableOfContents from "../../components/docs/DocsTableOfContents.astro";
+import DocsPrevNext from "../../components/docs/DocsPrevNext.astro";
+import { docsConfig } from "../../config/docs";
+import PencilRocketLogo from "../../components/docs/PencilRocketLogo.astro";
+import "../../styles/docs/docs-prose.css";
 
 const { title, currentSlug, headings = [] } = Astro.props;
 ---
