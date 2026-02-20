@@ -16,13 +16,17 @@ export default function Search() {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const inputRef = useRef<HTMLInputElement>(null);
 
+    const baseUrl = import.meta.env.BASE_URL.endsWith('/')
+        ? import.meta.env.BASE_URL.slice(0, -1)
+        : import.meta.env.BASE_URL;
+
     // Fetch index on mount
     useEffect(() => {
-        fetch('/search-index.json')
+        fetch(`${baseUrl}/search-index.json`)
             .then(res => res.json())
             .then(data => setIndex(data))
             .catch(err => console.error('Failed to load search index', err));
-    }, []);
+    }, [baseUrl]);
 
     // Handle shortcuts
     useEffect(() => {
@@ -65,13 +69,10 @@ export default function Search() {
             e.preventDefault();
             setSelectedIndex(prev => (prev - 1 + results.length) % results.length);
         } else if (e.key === 'Enter' && results[selectedIndex]) {
-            window.location.href = `/docs/${results[selectedIndex].slug === 'index' ? '' : results[selectedIndex].slug}`;
+            window.location.href = `${baseUrl}/docs/${results[selectedIndex].slug === 'index' ? '' : results[selectedIndex].slug}`;
         }
     };
 
-    const baseUrl = import.meta.env.BASE_URL.endsWith('/')
-        ? import.meta.env.BASE_URL.slice(0, -1)
-        : import.meta.env.BASE_URL;
 
     return (
         <>
