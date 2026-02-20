@@ -6,6 +6,7 @@ import ThemeToggle from "../components/ThemeToggle.astro";
 import FontSettings from "../components/FontSettings";
 import DocsTableOfContents from "../components/DocsTableOfContents.astro";
 import DocsPrevNext from "../components/DocsPrevNext.astro";
+import { docsConfig } from "../config/docs";
 
 const { title, currentSlug, headings = [] } = Astro.props;
 ---
@@ -169,14 +170,24 @@ const { title, currentSlug, headings = [] } = Astro.props;
 
             <!-- Main Content -->
             <main class="flex-1 w-full min-w-0 px-4 md:px-8 py-10 lg:pl-10">
-                <div class="max-w-6xl mx-auto flex items-start gap-12">
+                <div
+                    class={`${docsConfig.ui.contentMaxWidth} mx-auto flex items-start gap-12`}
+                >
                     <article
                         class="prose dark:prose-invert flex-1 min-w-0 max-w-none"
                     >
                         <slot />
-                        <DocsPrevNext currentSlug={currentSlug} />
+                        {
+                            docsConfig.ui.showPrevNextLinks && (
+                                <DocsPrevNext currentSlug={currentSlug} />
+                            )
+                        }
                     </article>
-                    <DocsTableOfContents headings={headings} />
+                    {
+                        docsConfig.ui.showTableOfContents && (
+                            <DocsTableOfContents headings={headings} />
+                        )
+                    }
                 </div>
             </main>
         </div>
