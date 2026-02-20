@@ -14,8 +14,8 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
 export default defineConfig({
-  site: 'https://aryan-sharma.github.io', 
-  base: isGhPages ? '/kinetix/' : '/',
+  site: 'https://simplearyan.github.io', 
+  base: isGhPages ? '/notebook/' : '/',
   markdown: {
     remarkPlugins: [remarkMath],
     rehypePlugins: [rehypeKatex],
