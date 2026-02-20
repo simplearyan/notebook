@@ -1,0 +1,39 @@
+---
+const { size = 24, className = "" } = Astro.props;
+---
+
+<svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    class={className}
+>
+    <!-- Rocket Flame -->
+    <path
+        d="M12 22C12 22 15 18 15 16C15 14 13.5 13 12 13C10.5 13 9 14 9 16C9 18 12 22 12 22Z"
+        fill="#FCA5A5"
+        class="animate-pulse"></path>
+    <path
+        d="M12 21C12 21 14 18.5 14 17C14 15.5 13 14.5 12 14.5C11 14.5 10 15.5 10 17C10 18.5 12 21 12 21Z"
+        fill="#EF4444"></path>
+
+    <!-- Rocket Fins -->
+    <path d="M7 16L4 18L5 14L7 16Z" fill="#64748B"></path>
+    <path d="M17 16L20 18L19 14L17 16Z" fill="#64748B"></path>
+
+    <!-- Pencil Body (Yellow) -->
+    <rect x="9" y="5" width="6" height="11" rx="1" fill="#FCD34D"></rect>
+    <rect x="11" y="5" width="2" height="11" fill="#F59E0B"></rect>
+
+    <!-- Eraser (Pink) -->
+    <path
+        d="M9 14H15V16C15 16.5523 14.5523 17 14 17H10C09.4477 17 9 16.5523 9 16V14Z"
+        fill="#FDA4AF"></path>
+    <rect x="9" y="14" width="6" height="1" fill="#E11D48" opacity="0.2"></rect>
+
+    <!-- Pencil Tip (Nose) -->
+    <path d="M12 2L9 5H15L12 2Z" fill="#D1D5DB"></path>
+    <path d="M12 2L11 3.5H13L12 2Z" fill="#374151"></path>
+</svg>
