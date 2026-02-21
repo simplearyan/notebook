@@ -1,13 +1,10 @@
 ---
-import { Menu, X, ChevronLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import CourseSidebar from "../../components/courses/CourseSidebar.astro";
+import CourseHeader from "../../components/courses/CourseHeader.astro";
 import DocsHeader from "../../components/docs/DocsHeader.astro";
-import ThemeToggle from "../../components/ThemeToggle.astro";
-import FontSettings from "../../components/docs/FontSettings";
 import DocsTableOfContents from "../../components/docs/DocsTableOfContents.astro";
-import DocsPrevNext from "../../components/docs/DocsPrevNext.astro";
 import { docsConfig } from "../../config/docs";
-import PencilRocketLogo from "../../components/docs/PencilRocketLogo.astro";
 import "../../styles/docs/docs-prose.css";
 
 const { title, currentSlug, courseType, headings = [] } = Astro.props;
