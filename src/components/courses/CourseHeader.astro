@@ -14,7 +14,7 @@ const navLinks = [
 ---
 
 <header
-    class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-neutral-800 bg-white/90 dark:bg-[#0e0e0f]/95 backdrop-blur-md"
+    class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-neutral-800 bg-white/90 dark:bg-[#1e1e1f]/95 backdrop-blur-md"
 >
     <div class="max-w-8xl mx-auto px-4 lg:px-8">
         <div class="flex items-center h-[57px] gap-4">
@@ -70,10 +70,10 @@ const navLinks = [
             <!-- Mobile menu button -->
             <button
                 id="course-menu-btn"
-                class="lg:hidden p-2 rounded-md text-slate-500 hover:bg-slate-100 dark:hover:bg-neutral-800 transition-colors"
+                class="md:hidden p-2 rounded-md text-slate-500 hover:bg-slate-100 dark:hover:bg-neutral-800 transition-colors z-[60]"
             >
                 <svg
-                    class="w-5 h-5"
+                    class="w-5 h-5 menu-icon"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -84,7 +84,134 @@ const navLinks = [
                         stroke-width="2"
                         d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
+                <svg
+                    class="w-5 h-5 close-icon hidden"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
             </button>
         </div>
     </div>
 </header>
+
+<!-- Mobile Menu Overlay -->
+<div
+    id="course-mobile-menu"
+    class="fixed inset-0 bg-white dark:bg-[#0e0e0f] z-[100] translate-x-full transition-transform duration-300 md:hidden"
+>
+    <!-- Header inside Menu for Close Button -->
+    <div
+        class="flex items-center justify-between h-[57px] px-4 border-b border-slate-100 dark:border-neutral-800"
+    >
+        <div
+            class="flex items-center gap-2 font-bold text-slate-900 dark:text-white"
+        >
+            <PencilRocketLogo size={18} />
+            <span>Kinetix</span>
+        </div>
+        <button
+            id="course-mobile-close-btn"
+            class="p-2 rounded-md text-slate-500 hover:bg-slate-100 dark:hover:bg-neutral-800 transition-colors"
+        >
+            <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+    </div>
+
+    <div class="flex flex-col h-full py-6 px-6 gap-2">
+        {
+            navLinks.map((link) => (
+                <a
+                    href={link.href}
+                    class="px-4 py-4 text-lg font-medium text-slate-900 dark:text-white border-b border-slate-100 dark:border-neutral-800 flex items-center justify-between group"
+                >
+                    {link.label}
+                    <svg
+                        class="w-5 h-5 text-slate-400 group-hover:translate-x-1 transition-transform"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 5l7 7-7 7"
+                        />
+                    </svg>
+                </a>
+            ))
+        }
+        <div class="mt-8 flex items-center justify-between px-4">
+            <span
+                class="text-sm text-neutral-500 font-medium font-display tracking-widest uppercase"
+                >Settings</span
+            >
+            <FontSettings client:load />
+        </div>
+    </div>
+</div>
+
+<script>
+    const setupMenu = () => {
+        const openBtn = document.getElementById("course-menu-btn");
+        const closeBtn = document.getElementById("course-mobile-close-btn");
+        const menu = document.getElementById("course-mobile-menu");
+
+        if (!openBtn || !menu || !closeBtn) return;
+
+        const toggleMenu = (open: boolean) => {
+            if (open) {
+                menu.classList.remove("translate-x-full");
+                document.body.style.overflow = "hidden";
+            } else {
+                menu.classList.add("translate-x-full");
+                document.body.style.overflow = "";
+            }
+        };
+
+        openBtn.addEventListener("click", () => toggleMenu(true));
+        closeBtn.addEventListener("click", () => toggleMenu(false));
+
+        // Close menu on link click
+        menu.querySelectorAll("a").forEach((link) => {
+            link.addEventListener("click", () => toggleMenu(false));
+        });
+
+        // Close on Escape key
+        document.addEventListener("keydown", (e) => {
+            if (
+                e.key === "Escape" &&
+                !menu.classList.contains("translate-x-full")
+            ) {
+                toggleMenu(false);
+            }
+        });
+    };
+
+    setupMenu();
+    document.addEventListener("astro:after-swap", setupMenu);
+</script>
+
+<style>
+    .font-display {
+        font-family: "Outfit", sans-serif;
+    }
+</style>
