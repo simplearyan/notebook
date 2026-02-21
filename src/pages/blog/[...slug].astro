@@ -4,6 +4,7 @@ import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
 import CtaSection from "../../components/CtaSection.astro";
 import { ChevronLeft } from "lucide-react";
+import "../../styles/blog/blog-prose.css";
 
 export async function getStaticPaths() {
     const posts = await getCollection("blog");
@@ -73,7 +74,7 @@ const { Content } = await post.render();
             }
 
             {/* Content */}
-            <div class="prose mx-auto">
+            <div class="blog-prose">
                 <Content />
             </div>
         </article>

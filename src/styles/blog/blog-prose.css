@@ -1,0 +1,237 @@
+/* ================================================
+   Blog Prose Styles — Light Mode Only, Independent
+   ================================================ */
+
+/* Reset any global .prose overrides for blog */
+.blog-prose {
+    /* Typography */
+    font-family: 'Inter', 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.85;
+    color: #1e293b;
+    max-width: 68ch;
+    margin: 0 auto;
+
+    /* Tailwind Prose Token Overrides (light only) */
+    --tw-prose-body: #334155;
+    --tw-prose-headings: #0f172a;
+    --tw-prose-lead: #475569;
+    --tw-prose-links: #2563eb;
+    --tw-prose-bold: #0f172a;
+    --tw-prose-counters: #64748b;
+    --tw-prose-bullets: #94a3b8;
+    --tw-prose-hr: #e2e8f0;
+    --tw-prose-quotes: #0f172a;
+    --tw-prose-quote-borders: #3b82f6;
+    --tw-prose-captions: #64748b;
+    --tw-prose-code: #db2777;
+    --tw-prose-pre-code: #e2e8f0;
+    --tw-prose-pre-bg: #1e293b;
+    --tw-prose-th-borders: #e2e8f0;
+    --tw-prose-td-borders: #e2e8f0;
+}
+
+/* Headings */
+.blog-prose h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: #0f172a;
+    /* Plain solid color — no gradient clip that can wash out */
+    -webkit-text-fill-color: unset;
+    background: none;
+    margin-bottom: 1.5rem;
+    margin-top: 0;
+}
+
+.blog-prose h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 0.5rem;
+    margin-top: 3rem;
+    margin-bottom: 1.25rem;
+}
+
+.blog-prose h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.blog-prose h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #334155;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Paragraphs */
+.blog-prose p {
+    color: #334155;
+    margin-bottom: 1.5em;
+}
+
+/* Links */
+.blog-prose a {
+    color: #2563eb;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+    transition: color 0.2s;
+}
+
+.blog-prose a:hover {
+    color: #1d4ed8;
+}
+
+/* Strong / Bold */
+.blog-prose strong {
+    color: #0f172a;
+    font-weight: 700;
+}
+
+/* Lists */
+.blog-prose ul,
+.blog-prose ol {
+    margin: 1.5em 0;
+    padding-left: 0;
+}
+
+.blog-prose ul {
+    list-style: none;
+}
+
+.blog-prose ul > li {
+    position: relative;
+    padding-left: 1.75em;
+    margin-bottom: 0.6em;
+    color: #334155;
+}
+
+.blog-prose ul > li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #3b82f6;
+}
+
+.blog-prose ol {
+    list-style: decimal;
+    padding-left: 1.5rem;
+}
+
+.blog-prose ol > li {
+    margin-bottom: 0.6em;
+    color: #334155;
+    padding-left: 0.5rem;
+}
+
+/* Blockquotes */
+.blog-prose blockquote {
+    border-left: 4px solid #3b82f6;
+    background: #f8fafc;
+    padding: 1.25rem 1.5rem;
+    margin: 2em 0;
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    color: #475569;
+}
+
+.blog-prose blockquote p {
+    margin-bottom: 0;
+    color: inherit;
+}
+
+/* Inline Code */
+.blog-prose :not(pre) > code {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.875em;
+    font-weight: 600;
+    color: #db2777;
+    background-color: #fdf2f8;
+    padding: 0.2em 0.45em;
+    border-radius: 4px;
+}
+
+/* Code Blocks */
+.blog-prose pre {
+    background-color: #1e293b !important;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin: 2rem 0;
+    overflow-x: auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.blog-prose pre code {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.875em;
+    color: #e2e8f0;
+    background: transparent;
+    padding: 0;
+}
+
+/* Images */
+.blog-prose img {
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    margin: 2.5rem auto;
+    display: block;
+    max-width: 100%;
+}
+
+/* Tables */
+.blog-prose table {
+    width: 100%;
+    margin: 2em 0;
+    border-collapse: collapse;
+    font-size: 0.95em;
+}
+
+.blog-prose thead th {
+    font-weight: 600;
+    text-align: left;
+    padding: 0.75rem;
+    border-bottom: 2px solid #e2e8f0;
+    color: #0f172a;
+    background: #f8fafc;
+}
+
+.blog-prose td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+}
+
+/* HR */
+.blog-prose hr {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 3rem 0;
+}
+
+/* KaTeX */
+.blog-prose .katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 1rem 0;
+    margin: 1.5rem 0;
+}
+
+.blog-prose .katex {
+    font-size: 1.1em;
+}
