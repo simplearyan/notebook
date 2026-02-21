@@ -4,6 +4,9 @@ import CourseSidebar from "../../components/courses/CourseSidebar.astro";
 import CourseHeader from "../../components/courses/CourseHeader.astro";
 import DocsHeader from "../../components/docs/DocsHeader.astro";
 import DocsTableOfContents from "../../components/docs/DocsTableOfContents.astro";
+import PencilRocketLogo from "../../components/docs/PencilRocketLogo.astro";
+import ThemeToggle from "../../components/ThemeToggle.astro";
+import FontSettings from "../../components/docs/FontSettings";
 import { docsConfig } from "../../config/docs";
 import "../../styles/docs/docs-prose.css";
 
@@ -98,6 +101,92 @@ const { title, currentSlug, courseType, headings = [] } = Astro.props;
                 </div>
             </aside>
 
+            <!-- Mobile Off-canvas Sidebar -->
+            <div
+                id="docs-mobile-menu"
+                class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity lg:hidden"
+            >
+                <div
+                    class="absolute left-0 top-0 bottom-0 w-3/4 max-w-sm bg-white dark:bg-neutral-900 shadow-2xl transform -translate-x-full transition-transform duration-300 flex flex-col"
+                    id="docs-mobile-drawer"
+                >
+                    <!-- Header & Nav (Scrollable) -->
+                    <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2
+                                class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2"
+                            >
+                                <div
+                                    class="w-8 h-8 bg-slate-100 dark:bg-neutral-800 rounded-lg flex items-center justify-center border border-slate-200 dark:border-slate-700"
+                                >
+                                    <PencilRocketLogo size={20} />
+                                </div>
+                                Navigation
+                            </h2>
+                            <button
+                                id="docs-menu-close"
+                                class="p-2 rounded-md text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                            >
+                                <svg
+                                    class="w-5 h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <a
+                            href={`${import.meta.env.BASE_URL}courses`}
+                            class="flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-neutral-400 mb-6 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group"
+                        >
+                            <ChevronLeft
+                                size={16}
+                                className="transition-transform group-hover:-translate-x-1"
+                            />
+                            Back to Courses
+                        </a>
+
+                        <CourseSidebar
+                            currentSlug={currentSlug}
+                            courseType={courseType}
+                        />
+                    </div>
+
+                    <!-- Bottom Controls (Pinned) -->
+                    <div
+                        class="p-4 border-t border-slate-200 dark:border-neutral-800 bg-slate-50/80 dark:bg-neutral-900/80 backdrop-blur-md"
+                    >
+                        <div class="grid grid-cols-2 gap-3">
+                            <div
+                                class="flex flex-col gap-2 p-3 rounded-xl bg-white dark:bg-neutral-800 border border-slate-200 dark:border-slate-700 shadow-sm"
+                            >
+                                <span
+                                    class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"
+                                    >Theme</span
+                                >
+                                <ThemeToggle />
+                            </div>
+                            <div
+                                class="flex flex-col gap-2 p-3 rounded-xl bg-white dark:bg-neutral-800 border border-slate-200 dark:border-slate-700 shadow-sm"
+                            >
+                                <span
+                                    class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"
+                                    >Font</span
+                                >
+                                <FontSettings client:load align="top" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Main Content -->
             <main class="flex-1 w-full min-w-0 px-4 md:px-8 py-10 lg:pl-10">
                 <div
@@ -117,5 +206,38 @@ const { title, currentSlug, courseType, headings = [] } = Astro.props;
                 </div>
             </main>
         </div>
+        <script>
+            const menuBtnHeader = document.getElementById(
+                "docs-menu-btn-header",
+            );
+            const closeBtn = document.getElementById("docs-menu-close");
+            const mobileMenu = document.getElementById("docs-mobile-menu");
+            const drawer = document.getElementById("docs-mobile-drawer");
+
+            function openMenu() {
+                mobileMenu?.classList.remove(
+                    "opacity-0",
+                    "pointer-events-none",
+                );
+                drawer?.classList.remove("-translate-x-full");
+                document.body.style.overflow = "hidden";
+            }
+
+            function closeMenu() {
+                mobileMenu?.classList.add("opacity-0", "pointer-events-none");
+                drawer?.classList.add("-translate-x-full");
+                document.body.style.overflow = "";
+            }
+
+            if (menuBtnHeader)
+                menuBtnHeader.addEventListener("click", openMenu);
+            if (closeBtn) closeBtn.addEventListener("click", closeMenu);
+
+            if (mobileMenu) {
+                mobileMenu.addEventListener("click", (e) => {
+                    if (e.target === mobileMenu) closeMenu();
+                });
+            }
+        </script>
     </body>
 </html>
