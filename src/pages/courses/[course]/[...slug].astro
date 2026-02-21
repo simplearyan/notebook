@@ -1,0 +1,52 @@
+---
+import { getCollection, render } from "astro:content";
+import CourseLayout from "../../../layouts/courses/CourseLayout.astro";
+
+export async function getStaticPaths() {
+    const courses = await getCollection("courses" as any);
+    console.log("Loading courses from collection:", (courses as any[]).length);
+
+    return (courses as any[]).map((entry) => {
+        // In v5 glob, id is the relative path (e.g. 'stats/index.md')
+        // Strip .md extension if present
+        const cleanId = entry.id.replace(/\.md$/, "");
+        const parts = cleanId.split("/");
+
+        const course = parts[0];
+        const slugParts = parts.slice(1);
+        const slug = slugParts.join("/") || undefined;
+
+        const params = {
+            course: course,
+            slug: slug === "index" || !slug ? undefined : slug,
+        };
+
+        console.log(`Mapping ID "${entry.id}" to params:`, params);
+
+        return {
+            params,
+            props: { entry, course },
+        };
+    });
+}
+
+const { entry, course } = Astro.props;
+const { Content, headings } = await render(entry);
+---
+
+<CourseLayout
+    title={entry.data.title}
+    currentSlug={entry.id.replace(/\.md$/, "")}
+    courseType={course}
+    headings={headings}
+>
+    <h1>{entry.data.title}</h1>
+    {
+        entry.data.description && (
+            <p class="text-xl text-slate-600 dark:text-slate-400 mb-8">
+                {entry.data.description}
+            </p>
+        )
+    }
+    <Content />
+</CourseLayout>

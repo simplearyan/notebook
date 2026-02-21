@@ -1,0 +1,118 @@
+---
+import { getCollection } from "astro:content";
+import SmartSidebar from "../docs/SmartSidebar";
+
+const { currentSlug, courseType } = Astro.props;
+const allCourses = await getCollection("courses" as any);
+
+// Filter courses by the current course type (e.g., 'stats' or 'maths')
+const courses = (allCourses as any[]).filter((doc: any) =>
+    (doc.id || doc.slug || "").startsWith(courseType),
+);
+
+type NavNode = {
+    name: string;
+    path: string;
+    children: NavNode[];
+    doc: any | null;
+    order: number;
+    title: string;
+};
+
+const groupDocs = (docs: any[]): NavNode[] => {
+    const items = docs
+        .map((doc) => ({
+            id: doc.id,
+            slug: doc.slug || doc.id.replace(/\.md$/, ""),
+            title: doc.data.title,
+            order: doc.data.order,
+            ...doc,
+        }))
+        .sort((a, b) => a.order - b.order);
+
+    const tree: NavNode[] = [];
+    const lookup: Record<string, NavNode> = {};
+
+    items.forEach((doc: any) => {
+        // Use processed slug for consistency with routing
+        const relativeSlug = doc.slug.replace(`${courseType}/`, "");
+        const parts = relativeSlug.split("/");
+
+        let path = "";
+        let parent = tree;
+
+        if (
+            relativeSlug === "index" ||
+            relativeSlug === courseType ||
+            relativeSlug === ""
+        ) {
+            // Root index of the course
+            const node = {
+                name: "Introduction",
+                path: `${courseType}`,
+                children: [],
+                doc: doc,
+                order: doc.data.order,
+                title: doc.data.title,
+            };
+            tree.push(node);
+            lookup[node.path] = node;
+            return;
+        }
+
+        for (let i = 0; i < parts.length; i++) {
+            const part = parts[i];
+            if (part === "index") continue;
+
+            path = path ? `${path}/${part}` : part;
+            const fullPath = `${courseType}/${path}`;
+
+            let node = lookup[fullPath];
+
+            if (!node) {
+                node = {
+                    name: part,
+                    path: fullPath,
+                    children: [],
+                    doc: null,
+                    order: 999,
+                    title:
+                        part.charAt(0).toUpperCase() +
+                        part.slice(1).replace(/-/g, " "),
+                };
+                parent.push(node);
+                lookup[fullPath] = node;
+            }
+
+            if (
+                i === parts.length - 1 ||
+                (i === parts.length - 2 && parts[i + 1] === "index")
+            ) {
+                node.doc = doc;
+                node.title = doc.data.title;
+                node.order = doc.data.order;
+            }
+
+            parent = node.children;
+        }
+    });
+
+    const sortTree = (nodes: NavNode[]) => {
+        nodes.sort((a, b) => a.order - b.order);
+        nodes.forEach((n) => sortTree(n.children));
+    };
+    sortTree(tree);
+
+    return tree;
+};
+
+const navTree = groupDocs(courses);
+---
+
+<SmartSidebar
+    client:load
+    menu={navTree}
+    currentSlug={currentSlug || ""}
+    baseUrl={import.meta.env.BASE_URL}
+    pathPrefix="courses/"
+/>

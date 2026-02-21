@@ -1,0 +1,95 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import CourseCard from "../../components/courses/CourseCard.astro";
+
+const courses = [
+    {
+        title: "Introduction to Statistics",
+        description:
+            "Comprehensive guide to data analysis, probability, and statistical inference designed for beginners and intermediates.",
+        href: `${import.meta.env.BASE_URL}courses/stats`,
+        icon: "📊",
+        color: "blue",
+    },
+    {
+        title: "Advanced Mathematics",
+        description:
+            "Deep dive into calculus, linear algebra, and discrete math. Perfect for engineering and science students.",
+        href: `${import.meta.env.BASE_URL}courses/maths`,
+        icon: "➗",
+        color: "purple",
+    },
+];
+---
+
+<Layout title="Courses - Kinetix Learning">
+    <main class="min-h-screen bg-slate-50 dark:bg-neutral-950">
+        <Navbar />
+
+        <div class="py-20 px-6">
+            <div class="container mx-auto max-w-6xl">
+                <header class="text-center mb-16">
+                    <div
+                        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-semibold uppercase tracking-wider mb-4"
+                    >
+                        <span
+                            class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"
+                        ></span>
+                        Academic Modules
+                    </div>
+                    <h1
+                        class="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6 tracking-tight"
+                    >
+                        Explore Our <span class="text-blue-600">Courses</span>
+                    </h1>
+                    <p
+                        class="text-lg text-slate-600 dark:text-neutral-400 max-w-2xl mx-auto"
+                    >
+                        Structured learning paths designed to help you master
+                        complex subjects with ease. From statistics to advanced
+                        mathematics.
+                    </p>
+                </header>
+
+                <div
+                    class="grid md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-4xl mx-auto"
+                >
+                    {courses.map((course) => <CourseCard {...course} />)}
+                </div>
+
+                <div
+                    class="mt-20 p-8 rounded-3xl bg-blue-600 relative overflow-hidden text-center text-white"
+                >
+                    <div
+                        class="absolute inset-0 opacity-10 pointer-events-none"
+                    >
+                        <svg
+                            class="w-full h-full"
+                            viewBox="0 0 100 100"
+                            preserveAspectRatio="none"
+                        >
+                            <path d="M0 100 C 20 0 50 0 100 100" fill="white"
+                            ></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-3xl font-bold mb-4 relative z-10">
+                        Don't see what you're looking for?
+                    </h2>
+                    <p
+                        class="text-blue-100 mb-8 relative z-10 max-w-xl mx-auto"
+                    >
+                        We are constantly adding new courses and learning
+                        materials. Subscribe to our newsletter to get notified
+                        when new modules drop.
+                    </p>
+                    <button
+                        class="px-8 py-3 bg-white text-blue-600 font-bold rounded-xl hover:bg-blue-50 transition-colors relative z-10"
+                    >
+                        Stay Updated
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+</Layout>

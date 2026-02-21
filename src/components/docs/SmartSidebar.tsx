@@ -14,9 +14,10 @@ interface SmartSidebarProps {
     menu: NavNode[];
     currentSlug: string;
     baseUrl: string;
+    pathPrefix?: string;
 }
 
-const SidebarItem = ({ item, currentSlug, level = 0, baseUrl }: { item: NavNode, currentSlug: string, level?: number, baseUrl: string }) => {
+const SidebarItem = ({ item, currentSlug, level = 0, baseUrl, pathPrefix = "docs/" }: { item: NavNode, currentSlug: string, level?: number, baseUrl: string, pathPrefix?: string }) => {
     // Determine strict active state (exact match or direct index match)
     const isActive = currentSlug === item.path ||
         (currentSlug === "" && item.path === "index") ||
@@ -56,7 +57,7 @@ const SidebarItem = ({ item, currentSlug, level = 0, baseUrl }: { item: NavNode,
                 {/* Link or Toggle */}
                 {item.doc ? (
                     <a
-                        href={`${baseUrl}docs/${item.path === "index" ? "" : item.path.replace(/\/index$/, '')}`}
+                        href={`${baseUrl}${pathPrefix}${item.path === "index" ? "" : item.path.replace(/\/index$/, '')}`}
                         className="flex-1 flex items-center gap-2 truncate"
                     >
                         {isLeaf ? (
@@ -97,6 +98,7 @@ const SidebarItem = ({ item, currentSlug, level = 0, baseUrl }: { item: NavNode,
                             currentSlug={currentSlug}
                             level={0} // We use border nesting instead of deep padding for a cleaner look
                             baseUrl={baseUrl}
+                            pathPrefix={pathPrefix}
                         />
                     ))}
                 </ul>
@@ -105,7 +107,7 @@ const SidebarItem = ({ item, currentSlug, level = 0, baseUrl }: { item: NavNode,
     );
 };
 
-export default function SmartSidebar({ menu, currentSlug, baseUrl }: SmartSidebarProps) {
+export default function SmartSidebar({ menu, currentSlug, baseUrl, pathPrefix = "docs/" }: SmartSidebarProps) {
     return (
         <nav className="pb-8">
             <ul className="space-y-0.5">
@@ -115,6 +117,7 @@ export default function SmartSidebar({ menu, currentSlug, baseUrl }: SmartSideba
                         item={item}
                         currentSlug={currentSlug}
                         baseUrl={baseUrl}
+                        pathPrefix={pathPrefix}
                     />
                 ))}
             </ul>

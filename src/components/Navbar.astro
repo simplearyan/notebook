@@ -2,8 +2,9 @@
 import { Menu, X } from "lucide-react";
 
 const links = [
+    { label: "Courses", href: `${import.meta.env.BASE_URL}courses` },
     { label: "Docs", href: `${import.meta.env.BASE_URL}docs` },
-    { label: "Blog", href: `${import.meta.env.BASE_URL}blog` }
+    { label: "Blog", href: `${import.meta.env.BASE_URL}blog` },
 ];
 ---
 
@@ -60,10 +61,10 @@ const links = [
             class="md:hidden z-50 text-slate-900 focus:outline-none"
         >
             <span class="icon-menu block">
-                <Menu class="w-8 h-8" />
+                <Menu className="w-8 h-8" />
             </span>
             <span class="icon-close hidden">
-                <X class="w-8 h-8" />
+                <X className="w-8 h-8" />
             </span>
         </button>
     </div>
