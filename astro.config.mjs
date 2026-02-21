@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import { fileURLToPath, URL } from 'url';
 
 // https://astro.build/config
 import react from '@astrojs/react';
@@ -24,5 +25,12 @@ export default defineConfig({
     react(), 
     tailwind(), 
     mdx()
-  ]
+  ],
+  vite: {
+    resolve: {
+      alias: {
+        '@widgets': fileURLToPath(new URL('./src/content-widgets', import.meta.url))
+      }
+    }
+  }
 });
