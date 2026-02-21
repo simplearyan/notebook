@@ -106,13 +106,53 @@ const groupDocs = (docs: any[]): NavNode[] => {
     return tree;
 };
 
+import { LucideBookOpen } from "lucide-react";
+
 const navTree = groupDocs(courses);
+
+// Split navTree into Essentials and Modules
+const essentials = navTree.filter(
+    (node) =>
+        !node.path.includes("/week-") &&
+        (node.path === courseType ||
+            node.title.toLowerCase().includes("introduction") ||
+            node.title.toLowerCase().includes("conduct") ||
+            node.title.toLowerCase().includes("rules")),
+);
+
+const modules = navTree.filter((node) => !essentials.includes(node));
 ---
 
-<SmartSidebar
-    client:load
-    menu={navTree}
-    currentSlug={currentSlug || ""}
-    baseUrl={import.meta.env.BASE_URL}
-    pathPrefix="courses/"
-/>
+<div class="space-y-6">
+    <!-- Course Essentials -->
+    <div>
+        <h5
+            class="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest mb-2 px-5"
+        >
+            Essentials
+        </h5>
+        <SmartSidebar
+            client:load
+            menu={essentials}
+            currentSlug={currentSlug || ""}
+            baseUrl={import.meta.env.BASE_URL}
+            pathPrefix="courses/"
+        />
+    </div>
+
+    <!-- Curriculum -->
+    <div>
+        <h5
+            class="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest mb-2 px-5"
+        >
+            Modules
+        </h5>
+        <SmartSidebar
+            client:load
+            menu={modules}
+            currentSlug={currentSlug || ""}
+            baseUrl={import.meta.env.BASE_URL}
+            pathPrefix="courses/"
+        />
+    </div>
+</div>

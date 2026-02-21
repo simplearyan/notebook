@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, ChevronDown, FileText, Folder, FolderOpen } from 'lucide-react';
+import { ChevronRight, ChevronDown, FileText, Folder, FolderOpen, PlayCircle, ClipboardList, BookOpen, Circle } from 'lucide-react';
 
 type NavNode = {
     name: string;
@@ -18,22 +18,16 @@ interface SmartSidebarProps {
 }
 
 const SidebarItem = ({ item, currentSlug, level = 0, baseUrl, pathPrefix = "docs/" }: { item: NavNode, currentSlug: string, level?: number, baseUrl: string, pathPrefix?: string }) => {
-    // Determine strict active state (exact match or direct index match)
+    // Determine strict active state
     const isActive = currentSlug === item.path ||
         (currentSlug === "" && item.path === "index") ||
         currentSlug === item.path + "/index";
 
-    // Determine if this item is in the active path (for auto-expanding parents)
     const isInActivePath = currentSlug.startsWith(item.path + '/') || isActive;
-
-    // Initial state: open if it's in the active path
     const [isOpen, setIsOpen] = useState(isInActivePath);
 
-    // Effect to auto-expand if navigation changes from outside
     useEffect(() => {
-        if (isInActivePath) {
-            setIsOpen(true);
-        }
+        if (isInActivePath) setIsOpen(true);
     }, [currentSlug, item.path]);
 
     const hasChildren = item.children && item.children.length > 0;
@@ -45,58 +39,77 @@ const SidebarItem = ({ item, currentSlug, level = 0, baseUrl, pathPrefix = "docs
         setIsOpen(!isOpen);
     };
 
-    // Styling helpers
-    const paddingLeft = level * 12 + 12; // Indentation
+    // Icon selection logic based on title/metadata
+    const getIcon = () => {
+        if (!isLeaf) {
+            return isOpen ? <FolderOpen size={16} className="text-blue-500" /> : <Folder size={16} className="text-slate-400 dark:text-neutral-500" />;
+        }
+
+        const type = item.doc?.data?.type?.toLowerCase() || '';
+        const title = item.title?.toLowerCase() || '';
+
+        if (type === 'video' || title.startsWith('l')) {
+            return <PlayCircle size={16} className={isActive ? 'text-blue-500' : 'text-slate-400 dark:text-neutral-500'} />;
+        }
+        if (type === 'assignment' || title.startsWith('aq') || title.includes('activity')) {
+            return <ClipboardList size={16} className={isActive ? 'text-amber-500' : 'text-slate-400 dark:text-neutral-500'} />;
+        }
+        if (title.includes('introduction') || title.includes('conduct') || title.includes('rules')) {
+            return <Circle size={10} className={isActive ? 'text-blue-500 fill-blue-500' : 'text-slate-300 dark:text-neutral-700'} />;
+        }
+
+        return <FileText size={16} className={isActive ? 'text-blue-500' : 'text-slate-400 dark:text-neutral-500'} />;
+    };
 
     return (
-        <li className="select-none">
+        <li className="select-none list-none">
             <div
-                className={`group flex items-center justify-between px-3 py-1.5 my-0.5 rounded-md text-sm transition-colors duration-200 cursor-pointer text-slate-600 dark:text-slate-400 hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-200 ${isActive ? 'bg-blue-50 text-blue-600 font-medium dark:bg-blue-900/20 dark:text-blue-400' : ''}`}
-                style={{ paddingLeft: `${paddingLeft}px` }}
+                className={`group flex items-center justify-between px-3 py-2 my-0.5 rounded-lg text-sm transition-all duration-200 cursor-pointer ${isActive
+                    ? 'bg-blue-500/15 text-blue-400 font-semibold dark:text-neutral-100'
+                    : 'text-slate-600 dark:text-neutral-300 hover:bg-slate-200/50 dark:hover:bg-neutral-800/80 dark:hover:text-neutral-100'
+                    }`}
+                onClick={(e) => !item.doc && toggleOpen(e)}
             >
-                {/* Link or Toggle */}
+                {/* Content Link */}
                 {item.doc ? (
                     <a
                         href={`${baseUrl}${pathPrefix}${item.path === "index" ? "" : item.path.replace(/\/index$/, '')}`}
-                        className="flex-1 flex items-center gap-2 truncate"
+                        className="flex-1 flex items-center gap-3 truncate"
                     >
-                        {isLeaf ? (
-                            <FileText size={14} className={`opacity-70 ${isActive ? 'text-blue-500' : ''}`} />
-                        ) : (
-                            isOpen ? <FolderOpen size={14} className="text-blue-400" /> : <Folder size={14} className="opacity-70" />
-                        )}
-                        <span>{item.title}</span>
+                        <span className="flex-shrink-0 flex items-center justify-center w-5">
+                            {getIcon()}
+                        </span>
+                        <span className={`truncate ${isActive ? 'text-blue-600 dark:text-neutral-50' : ''}`}>{item.title}</span>
                     </a>
                 ) : (
-                    <div
-                        className="flex-1 flex items-center gap-2 truncate"
-                        onClick={toggleOpen}
-                    >
-                        {isOpen ? <FolderOpen size={14} className="text-blue-400" /> : <Folder size={14} className="opacity-70" />}
-                        <span className="font-medium">{item.title}</span>
+                    <div className="flex-1 flex items-center gap-3 truncate" onClick={toggleOpen}>
+                        <span className="flex-shrink-0 flex items-center justify-center w-5">
+                            {getIcon()}
+                        </span>
+                        <span className={`font-semibold truncate ${isActive ? 'text-blue-600 dark:text-neutral-50' : ''}`}>{item.title}</span>
                     </div>
                 )}
 
-                {/* Chevron for explicit toggling of folders */}
+                {/* Chevron */}
                 {hasChildren && (
                     <button
                         onClick={toggleOpen}
-                        className={`p-1 rounded-sm hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors ${isInActivePath ? 'text-slate-800 dark:text-slate-200' : 'text-slate-400'}`}
+                        className={`p-1 rounded-md hover:bg-slate-300/50 dark:hover:bg-neutral-700/50 transition-colors ${isOpen ? 'text-slate-700 dark:text-neutral-200' : 'text-slate-400'}`}
                     >
                         {isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                     </button>
                 )}
             </div>
 
-            {/* Children Render */}
+            {/* Nested Items */}
             {hasChildren && isOpen && (
-                <ul className="border-l border-slate-200 dark:border-slate-800 ml-4 space-y-0.5 animate-in slide-in-from-top-2 fade-in duration-200">
+                <ul className="ml-4 space-y-0.5 mt-0.5 mb-1">
                     {item.children.map(child => (
                         <SidebarItem
                             key={child.path}
                             item={child}
                             currentSlug={currentSlug}
-                            level={0} // We use border nesting instead of deep padding for a cleaner look
+                            level={level + 1}
                             baseUrl={baseUrl}
                             pathPrefix={pathPrefix}
                         />
@@ -109,8 +122,8 @@ const SidebarItem = ({ item, currentSlug, level = 0, baseUrl, pathPrefix = "docs
 
 export default function SmartSidebar({ menu, currentSlug, baseUrl, pathPrefix = "docs/" }: SmartSidebarProps) {
     return (
-        <nav className="pb-8">
-            <ul className="space-y-0.5">
+        <nav className="pb-4">
+            <ul className="space-y-0 p-0 m-0">
                 {menu.map(item => (
                     <SidebarItem
                         key={item.path}
