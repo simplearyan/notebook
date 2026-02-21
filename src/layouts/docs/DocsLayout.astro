@@ -49,6 +49,22 @@ const { title, currentSlug, headings = [] } = Astro.props;
                 document.documentElement.classList.add("dark");
             }
             window.localStorage.setItem("theme", theme);
+
+            // Apply Typography Settings immediately to prevent flickering
+            const savedFont = localStorage.getItem("docs-font-family");
+            const savedSize = localStorage.getItem("docs-font-size");
+            if (savedFont) {
+                document.documentElement.style.setProperty(
+                    "--docs-font-family",
+                    savedFont,
+                );
+            }
+            if (savedSize) {
+                document.documentElement.style.setProperty(
+                    "--docs-font-size-base",
+                    savedSize,
+                );
+            }
         </script>
 
         <!-- Fonts (Same as Layout.astro) -->
